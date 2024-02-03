@@ -47,14 +47,12 @@
     </body>
         <script>
             function validateForm() {
-                // Проверка количества загруженных фото
                 var photoInput = document.getElementById("photos");
                 if (photoInput.files.length !== 8) {
                     alert("Пожалуйста, загрузите ровно 8 фото.");
                     return false;
                 }
 
-                // Проверка размера файла видео
                 var videoInput = document.getElementById("video");
                 if (videoInput.files.length > 0) {
                     var maxFileSize = 1024 * 1024 * 1024; // 1 ГБ

@@ -6,10 +6,9 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./web_volume:/app
+      - ./web_volume:/competitors
     depends_on:
       - db
-      - s3
   db:
     image: postgres:latest
     environment:
@@ -19,19 +18,7 @@ services:
     volumes:
       - ./db_volume:/var/lib/postgresql/data/
 
-  s3:
-    image: lphoward/fake-s3
-    ports:
-      - "4569:4569"
-    environment:
-      - ENABLE_BASIC_AUTH=true
-      - AWS_ACCESS_KEY_ID=your_access_key
-      - AWS_SECRET_ACCESS_KEY=your_secret_key
-    volumes:
-      - ./s3_volume:/fakes3_root/s3/s3
-
 
 volumes:
   db_volume:
-  s3_volume:
   web_volume:

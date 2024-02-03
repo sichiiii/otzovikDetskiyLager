@@ -22,7 +22,8 @@ def index(request):
         video = request.FILES.get('video')
 
         form_folder_name = f'{game_situation}_{fio_child}_' + str(uuid.uuid4())
-        form_folder = default_storage.get_available_name(os.path.join(settings.MEDIA_ROOT, form_folder_name))
+        form_folder = default_storage.get_available_name(os.path.join(settings.COMPETITORS_URL, form_folder_name))
+        os.mkdir('competitors/' + form_folder_name)
         form_data_path = os.path.join(form_folder, 'form_data.txt')
 
         with default_storage.open(form_data_path, 'w') as file:
