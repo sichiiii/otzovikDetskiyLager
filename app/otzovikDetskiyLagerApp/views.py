@@ -1,11 +1,12 @@
 import os
+import uuid
+
 
 from .models import Role
 from django.conf import settings
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.storage import default_storage
-import uuid
 
 
 @csrf_exempt
@@ -40,8 +41,8 @@ def index(request):
         count = 0
         for photo in photos:
             photo_path = default_storage.save(
-                os.path.join(form_folder, 'photos', fio_child + ' ' + game_situation + ' ' + '(' + str(count) + ')'
-                             + os.path.splitext(photo.name)[1]),
+                os.path.join(form_folder, 'photos',
+                             f'{fio_child}_{game_situation}_{count}{os.path.splitext(photo.name)[1]}'),
                 photo
             )
             photos_paths.append(photo_path)

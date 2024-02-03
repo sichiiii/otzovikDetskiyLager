@@ -28,7 +28,8 @@ services:
       - AWS_ACCESS_KEY_ID=your_access_key
       - AWS_SECRET_ACCESS_KEY=your_secret_key
     volumes:
-      - ./s3_volume:/var/lib/s3
+      - ./s3_volume:/fakes3_root/s3/s3
+
 
 volumes:
   db_volume:
