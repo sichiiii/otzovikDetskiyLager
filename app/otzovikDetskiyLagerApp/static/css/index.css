@@ -98,11 +98,34 @@ input[type="file"]::-webkit-file-upload-button {
 .container {
     max-width: 600px;
     margin: 0 auto;
+    position: relative;
+    padding-bottom: 30vh;
 }
 
+
 .logo img {
-    margin-left: 28%;
-    max-width: 250px;
+    padding-top: 60vh;
+    max-width: 30%;
     height: auto;
     margin-bottom: 20px;
+    display: block;
+    margin: 0 auto;
+}
+
+#loading-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8); /* Полупрозрачный белый фон */
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+#loading-spinner {
+    font-size: 40px;
+    color: #333; /* Цвет иконки загрузки */
 }
