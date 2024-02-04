@@ -57,3 +57,7 @@ def index(request):
 
     roles = Role.objects.all().values_list('name', flat=True)
     return render(request, 'index.html', {'roles': roles})
+
+
+def success(request):
+    return render(request, 'success.html')
