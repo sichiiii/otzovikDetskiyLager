@@ -15,32 +15,32 @@
             <form action="/" method="post" enctype="multipart/form-data" id="submitBtn" onsubmit="submitForm()">
                 <label for="fio">ФИО Ребенка:</label>
                 <input type="text" id="fio" name="fio_child" required><br>
-            
+
                 <label for="city">Город/населенный пункт:</label>
                 <input type="text" id="city" name="city" required><br>
-            
+
                 <label for="dou_number">Номер ДОУ:</label>
                 <input type="text" id="dou_number" name="dou_number" required><br>
-            
+
                 <label for="mentor_fio">ФИО педагога наставника:</label>
                 <input type="text" id="mentor_fio" name="mentor_fio" required><br>
-            
+
                 <label for="game_situation">Игровая ситуация:</label>
                 <select id="game_situation" name="game_situation" required>
                 {% for role in roles %}
                     <option value="{{ role }}">{{ role }}</option>
                 {% endfor %}
                 </select><br>
-            
+
                 <label for="data_processing_agreement">Соглашение на обработку персональных данных (.PDF):</label>
-                <input type="file" id="data_processing_agreement" name="data_processing_agreement" accept=".pdf" required multiple><br>
-            
+                <input type="file" id="data_processing_agreement" name="data_processing_agreement" accept=".pdf" multiple><br>
+
                 <label for="photos">Фото (8 штук, чтобы выбрать несколько фото за раз, зажмите ctrl на клавиатуре):</label>
                 <input type="file" id="photos" name="photos[]" accept=".jpeg, .jpg, .png, .gif" required multiple><br>
-            
+
                 <label for="video">Видео участника:</label>
                 <input type="file" id="video" name="video" accept=".mp4, .avi, .mkv .mov" required><br>
-            
+
                 <input type="submit" value="Отправить">
             </form>
         </div>
@@ -68,7 +68,7 @@
                     setTimeout(function () {
                         loadingOverlay.style.display = "none";
                         window.location.href = "/success";
-                    }, 3000);
+                    }, 180000);
                 }
             }
         </script>

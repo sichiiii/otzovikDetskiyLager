@@ -33,10 +33,13 @@ def index(request):
             file.write(f'ФИО педагога наставника: {mentor_fio}\n')
             file.write(f'Игровая ситуация: {game_situation}\n')
 
-        default_storage.save(
-            os.path.join(form_folder, fio_child + '_' + game_situation + os.path.splitext(data_processing_agreement.name)[1]),
-            data_processing_agreement
-        )
+        try:
+            default_storage.save(
+                os.path.join(form_folder, fio_child + '_' + game_situation + os.path.splitext(data_processing_agreement.name)[1]),
+                data_processing_agreement
+            )
+        except:
+            pass
 
         photos_paths = []
         count = 0
