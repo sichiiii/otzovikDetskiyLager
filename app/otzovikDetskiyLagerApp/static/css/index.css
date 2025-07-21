@@ -1,131 +1,194 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 100%);
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    min-height: 100vh;
 }
-
+nav {
+    background: #1976d2;
+    padding: 12px 0;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+}
+nav a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    font-size: 1.08em;
+    transition: color 0.2s, border-bottom 0.2s;
+    border-bottom: 2px solid transparent;
+    padding-bottom: 2px;
+}
+nav a:hover {
+    color: #ffeb3b;
+    border-bottom: 2px solid #ffeb3b;
+}
+.container, .card {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 4px 24px rgba(25, 118, 210, 0.08), 0 1.5px 4px rgba(0,0,0,0.04);
+    padding: 24px 28px;
+    margin: 24px auto;
+    max-width: 700px;
+}
+.card {
+    margin-bottom: 18px;
+    padding: 18px 22px;
+}
+h1, h2, h3 {
+    color: #1976d2;
+    font-weight: 700;
+    margin-top: 0;
+}
 form {
-    background-color: #fff;
-    padding: 20px;
+    margin-bottom: 18px;
+    background: #f5faff;
+    padding: 18px 20px;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1.5px 6px rgba(25, 118, 210, 0.04);
 }
-
-label {
-    display: block;
-    margin-bottom: 8px;
-}
-
-input,
-select,
-file {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-input[type="submit"] {
-    background-color: #4caf50;
+button, .btn {
+    background: linear-gradient(90deg, #1976d2 60%, #64b5f6 100%);
     color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 22px;
+    font-size: 1.08em;
     cursor: pointer;
+    margin-top: 10px;
+    margin-right: 8px;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
 }
-
-input[type="submit"]:hover {
-    background-color: #45a049;
+button[disabled], .btn[disabled] {
+    background: #b0bec5;
+    cursor: not-allowed;
+    box-shadow: none;
 }
-
-/* Add styles for better file input visibility */
-input[type="file"] {
-    cursor: pointer;
-    position: relative;
+button:hover:not([disabled]), .btn:hover:not([disabled]) {
+    background: linear-gradient(90deg, #1565c0 60%, #1976d2 100%);
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 4px 16px rgba(25, 118, 210, 0.13);
+}
+.btn-delete {
+    background: linear-gradient(90deg, #d32f2f 60%, #ff5252 100%);
+    color: #fff;
+    margin-left: 8px;
+}
+.btn-delete:hover {
+    background: linear-gradient(90deg, #b71c1c 60%, #d32f2f 100%);
+}
+input, select, textarea {
+    border: 1.5px solid #b0bec5;
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 1.05em;
+    background: #fafdff;
+    transition: border 0.2s;
+}
+input:focus, select:focus, textarea:focus {
+    border: 1.5px solid #1976d2;
+    outline: none;
+    background: #e3f2fd;
+}
+ul {
+    list-style: none;
+    padding-left: 0;
+}
+li {
+    margin-bottom: 7px;
+    font-size: 1.04em;
+}
+hr {
+    border: none;
+    border-top: 1.5px solid #e0e0e0;
+    margin: 28px 0;
+}
+#doc-progress, #photo-progress, #video-progress {
+    border-radius: 6px;
     overflow: hidden;
+    height: 20px;
+    margin-bottom: 7px;
 }
-
-input[type="file"]:before {
-    content: 'Выберите файл';
-    display: inline-block;
-    background: #428bca;
-    color: #fff;
-    padding: 6px 12px;
-    outline: none;
-    white-space: nowrap;
-    cursor: pointer;
-    text-align: center;
-    border: 1px solid #357ebd;
-    border-radius: 5px;
-    box-sizing: border-box;
-}
-
-input[type="file"]:hover:before {
-    border-color: #2a6496;
-}
-
-input[type="file"]::-webkit-file-upload-button {
-    visibility: hidden;
-}
-
-input[type="file"]:before {
-    content: 'Выберите файл';
-    display: inline-block;
-    background: #428bca;
-    color: #fff;
-    padding: 6px 12px;
-    outline: none;
-    white-space: nowrap;
-    cursor: pointer;
-    text-align: center;
-    border: 1px solid #357ebd;
-    border-radius: 5px;
-    box-sizing: border-box;
-}
-
-input[type="file"]:hover:before {
-    border-color: #2a6496;
-}
-
-input[type="file"]::-webkit-file-upload-button {
-    visibility: hidden;
-}
-
-.container {
-    max-width: 600px;
-    margin: 0 auto;
-    position: relative;
-    padding-bottom: 30vh;
-}
-
-
-.logo img {
-    padding-top: 60vh;
-    max-width: 30%;
-    height: auto;
-    margin-bottom: 20px;
-    display: block;
-    margin: 0 auto;
-}
-
-#loading-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
+#doc-bar {
+    background: linear-gradient(90deg, #4caf50, #81c784);
     height: 100%;
-    background: rgba(255, 255, 255, 0.8); /* Полупрозрачный белый фон */
-    justify-content: center;
-    align-items: center;
+    transition: width 0.2s;
+}
+#photo-bar {
+    background: linear-gradient(90deg, #2196f3, #64b5f6);
+    height: 100%;
+    transition: width 0.2s;
+}
+#video-bar {
+    background: linear-gradient(90deg, #f44336, #e57373);
+    height: 100%;
+    transition: width 0.2s;
+}
+#doc-status, #photo-status, #video-status {
+    font-size: 1em;
+    margin: 7px 0 12px 0;
+    min-height: 20px;
+}
+#doc-status.success, #photo-status.success, #video-status.success {
+    color: #388e3c;
+}
+#doc-status.error, #photo-status.error, #video-status.error {
+    color: #d32f2f;
+}
+@media (max-width: 800px) {
+    .container, .card {
+        padding: 12px 6px;
+        max-width: 98vw;
+    }
+    form {
+        padding: 10px 4px;
+    }
+}
+@media (max-width: 600px) {
+    nav a {
+        margin: 0 4px;
+        font-size: 0.97em;
+    }
+    h1, h2, h3 {
+        font-size: 1.08em;
+    }
+    .container, .card {
+        padding: 6px 2px;
+    }
+}
+#toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
     z-index: 9999;
 }
-
-#loading-spinner {
-    font-size: 40px;
-    color: #333; /* Цвет иконки загрузки */
+.toast {
+    min-width: 220px;
+    max-width: 350px;
+    background: #323232;
+    color: #fff;
+    padding: 14px 24px;
+    border-radius: 8px;
+    margin-bottom: 14px;
+    font-size: 1.05em;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    opacity: 0.97;
+    transition: opacity 0.5s, transform 0.5s;
+    transform: translateY(0);
 }
+.toast.hide {
+    opacity: 0;
+    transform: translateY(-30px);
+}
+.toast.info { background: #1976d2; }
+.toast.success { background: #388e3c; }
+.toast.warning { background: #ffa000; }
+.toast.error { background: #d32f2f; }

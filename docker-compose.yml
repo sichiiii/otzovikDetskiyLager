@@ -1,24 +1,43 @@
-version: '3'
-
 services:
   web:
     build: app/
     ports:
-      - "80:8000"
+      - "8000:8000"
     volumes:
-      - ./web_volume:/competitors
+      - web_volume:/competitors
+      - media:/media
+    command: >
+      sh -c "python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    networks:
+      - lager-network
   db:
     image: postgres:latest
     environment:
       POSTGRES_DB: your_db_name
       POSTGRES_USER: your_db_user
       POSTGRES_PASSWORD: your_db_password
+    expose:
+      - 5432
     volumes:
-      - ./db_volume:/var/lib/postgresql/data/
+      - db_volume:/var/lib/postgresql/data/
+    networks:
+      - lager-network
+    healthcheck:
+      test: "pg_isready -U your_db_user -d your_db_name"
+      interval: 1s
+      timeout: 10s
+      retries: 10
 
 
 volumes:
   db_volume:
   web_volume:
+  media:
+
+
+networks:
+  lager-network:
+    driver: bridge

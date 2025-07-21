@@ -55,6 +55,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = 'kirill.f@itfox-web.com'
+EMAIL_HOST_PASSWORD = 'miinxmoyikxmxzjt'
+DEFAULT_FROM_EMAIL = 'kirill.f@itfox-web.com'
+
 ROOT_URLCONF = 'otzovikDetskiyLager.urls'
 
 TEMPLATES = [
@@ -73,6 +81,8 @@ TEMPLATES = [
         },
     },
 ]
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 WSGI_APPLICATION = 'otzovikDetskiyLager.wsgi.application'
 
@@ -82,11 +92,11 @@ WSGI_APPLICATION = 'otzovikDetskiyLager.wsgi.application'
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": "db",
-        "USER": "your_db_name",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "your_db_name",
+        "USER": "your_db_user",
         "PASSWORD": "your_db_password",
-        "HOST": "0.0.0.0",
+        "HOST": "db",
         "PORT": "5432",
     }
 }
@@ -110,6 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'otzovikDetskiyLagerApp.User'
 
 
 # Internationalization
@@ -128,6 +139,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

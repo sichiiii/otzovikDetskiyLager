@@ -1,75 +1,62 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/index.css' %}">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Форма для отправки конкурсных материалов</title>
-</head>
-    <body>
-        <div class="container">
-            <div class="logo">
-                <img src="{% static 'images/logo.png' %}" alt="Логотип">
-            </div>
-            <form action="/" method="post" enctype="multipart/form-data" id="submitBtn" onsubmit="submitForm()">
-                <label for="fio">ФИО Ребенка:</label>
-                <input type="text" id="fio" name="fio_child" required><br>
-
-                <label for="city">Город/населенный пункт:</label>
-                <input type="text" id="city" name="city" required><br>
-
-                <label for="dou_number">Номер ДОУ:</label>
-                <input type="text" id="dou_number" name="dou_number" required><br>
-
-                <label for="mentor_fio">ФИО педагога наставника:</label>
-                <input type="text" id="mentor_fio" name="mentor_fio" required><br>
-
-                <label for="game_situation">Игровая ситуация:</label>
-                <select id="game_situation" name="game_situation" required>
-                {% for role in roles %}
-                    <option value="{{ role }}">{{ role }}</option>
-                {% endfor %}
-                </select><br>
-
-                <label for="data_processing_agreement">Соглашение на обработку персональных данных (.PDF):</label>
-                <input type="file" id="data_processing_agreement" name="data_processing_agreement" accept=".pdf" multiple><br>
-
-                <label for="photos">Фото (8 штук, чтобы выбрать несколько фото за раз, зажмите ctrl на клавиатуре):</label>
-                <input type="file" id="photos" name="photos[]" accept=".jpeg, .jpg, .png, .gif" required multiple><br>
-
-                <label for="video">Видео участника:</label>
-                <input type="file" id="video" name="video" accept=".mp4, .avi, .mkv .mov" required><br>
-
-                <input type="submit" value="Отправить">
-            </form>
-        </div>
-        <div id="loading-overlay">
-            <span id="loading-spinner" class="fa fa-spinner fa-spin"></span>
-            <p>Файлы загружаются, пожалуйста, подождите...</p>
-        </div>
-    </body>
-        <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
-        <script>
-            function validateForm() {
-                var photoInput = document.getElementById("photos");
-                if (photoInput.files.length !== 8) {
-                    alert("Пожалуйста, загрузите ровно 8 фото.");
-                    return false;
-                }
-                return true;
-            }
-
-            function submitForm() {
-                if (validateForm()) {
-                    var loadingOverlay = document.getElementById("loading-overlay");
-                    loadingOverlay.style.display = "flex";
-
-                    setTimeout(function () {
-                        loadingOverlay.style.display = "none";
-                        window.location.href = "/success";
-                    }, 600000);
-                }
-            }
-        </script>
-</html>
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div class="card" style="text-align:center;">
+    <h1>Региональный фестиваль рабочих профессий для дошкольников «Мастерская открытий»</h1>
+    <img src="/static/images/logo.png" alt="Логотип фестиваля" style="max-width:180px; margin: 18px auto; display:block;">
+  </div>
+  <div class="card">
+    <h2>Этапы проведения</h2>
+    <ul>
+      <li>Прием заявок: 01.09.2025 – 30.09.2025</li>
+      <li>Прием конкурсных работ: 15.09.2025 – 30.09.2025</li>
+      <li>Отборочный этап (заочный): 01.10.2025 – 31.10.2025</li>
+      <li>Финал (очный): 23.11.2025</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h2>Таймеры этапов</h2>
+    <ul>
+      {% for stage in stage_names %}
+        {% if stage in stages %}
+          {% with stage_obj=stages.stage %}
+          <li><b>{{ stage }}</b>:
+            {% if now < stage_obj.start %}
+              До старта: <span class="timer" data-time="{{ stage_obj.start|date:'c' }}"></span>
+            {% elif now < stage_obj.end %}
+              До окончания: <span class="timer" data-time="{{ stage_obj.end|date:'c' }}"></span>
+            {% else %}
+              Завершён
+            {% endif %}
+          </li>
+          {% endwith %}
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="card">
+    <h2>Контакты</h2>
+    <p>МАДОУ №247: 8 (343) 38-58-247, 89634440780</p>
+  </div>
+</div>
+<script>
+function updateTimers() {
+    document.querySelectorAll('.timer').forEach(function(el) {
+        var end = new Date(el.dataset.time);
+        var now = new Date();
+        var diff = Math.floor((end - now) / 1000);
+        if (diff > 0) {
+            var d = Math.floor(diff / 86400);
+            var h = Math.floor((diff % 86400) / 3600);
+            var m = Math.floor((diff % 3600) / 60);
+            var s = diff % 60;
+            el.textContent = `${d}д ${h}ч ${m}м ${s}с`;
+        } else {
+            el.textContent = 'Завершён';
+        }
+    });
+}
+setInterval(updateTimers, 1000);
+updateTimers();
+</script>
+{% endblock %}

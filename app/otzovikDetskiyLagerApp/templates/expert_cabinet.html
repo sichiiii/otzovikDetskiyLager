@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <h2>Личный кабинет эксперта</h2>
+  <div class="card">
+    <h3>Анкета и банковские реквизиты</h3>
+    <form method="post">
+      {% csrf_token %}
+      {{ profile_form.as_p }}
+      <button type="submit" name="save_profile" class="btn">Сохранить</button>
+    </form>
+  </div>
+  <div class="card">
+    <h3>Документы (PDF)</h3>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ doc_form.as_p }}
+      <button type="submit" name="upload_document" class="btn">Загрузить документ</button>
+    </form>
+    <ul>
+      {% for doc in documents %}
+        <li>{{ doc.get_doc_type_display }}: <a href="{{ doc.file.url }}" target="_blank" class="btn">Скачать</a>
+          <button class="btn btn-delete" onclick="deleteExpertFile('document', '{{ doc.id }}')" type="button">Удалить</button>
+        </li>
+      {% empty %}
+        <li style="color:#b0bec5;">Нет загруженных документов</li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Конкурсные работы участников</h3>
+    {% if not access_open %}
+      <div style="color:red; background:#fff3e0; border-radius:4px; padding:8px; margin-bottom:10px;">Доступ к работам участников будет открыт после окончания этапа приёма конкурсных работ.{% if stage %} Дата окончания: {{ stage.end|date:'d.m.Y H:i' }}{% endif %}</div>
+    {% elif participants %}
+      <ul>
+        {% for p in participants %}
+          <li style="margin-bottom:12px;"><b>{{ p.full_name }}</b> (Дата рождения: {{ p.birth_date }}) — ДОУ: {{ p.dou_name }}
+            <ul>
+              <li>Документы:
+                <ul>
+                  {% for doc in p.document_set.all %}
+                    <li>{{ doc.get_doc_type_display }}: <a href="{{ doc.file.url }}" target="_blank" class="btn">Скачать</a></li>
+                  {% empty %}
+                    <li style="color:#b0bec5;">Нет документов</li>
+                  {% endfor %}
+                </ul>
+              </li>
+              <li>Фото:
+                <ul>
+                  {% for photo in p.photos.all %}
+                    <li><a href="{{ photo.file.url }}" target="_blank" class="btn">Фото</a></li>
+                  {% empty %}
+                    <li style="color:#b0bec5;">Нет фото</li>
+                  {% endfor %}
+                </ul>
+              </li>
+              <li>Видео:
+                <ul>
+                  {% for video in p.videos.all %}
+                    <li><a href="{{ video.file.url }}" target="_blank" class="btn">Видео</a></li>
+                  {% empty %}
+                    <li style="color:#b0bec5;">Нет видео</li>
+                  {% endfor %}
+                </ul>
+              </li>
+            </ul>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div style="color:#b0bec5;">Нет участников по вашей игровой ситуации.</div>
+    {% endif %}
+  </div>
+</div>
+<script>
+function deleteExpertFile(fileType, fileId) {
+    if (!confirm('Вы уверены, что хотите удалить этот файл?')) return;
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '{% url "delete_expert_file" %}');
+    xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    xhr.onload = function() {
+        let resp = {};
+        try { resp = JSON.parse(xhr.responseText); } catch {}
+        if (xhr.status === 200) {
+            showToast(resp.message || 'Файл удалён!', 'success');
+            setTimeout(function(){ location.reload(); }, 1000);
+        } else {
+            showToast(resp.message || 'Ошибка удаления', 'error');
+        }
+    };
+    xhr.onerror = function() {
+        showToast('Ошибка удаления', 'error');
+    };
+    const formData = new FormData();
+    formData.append('file_type', fileType);
+    formData.append('file_id', fileId);
+    xhr.send(formData);
+}
+</script>
+{% endblock %} 

@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <h2>Личный кабинет участника</h2>
+  <div class="card">
+    <h3>Анкета</h3>
+    <ul>
+      <li><b>ФИО:</b> {{ participant.full_name }}</li>
+      <li><b>Дата рождения:</b> {{ participant.birth_date }}</li>
+      <li><b>ДОУ:</b> {{ participant.dou_name }}</li>
+      <li><b>Город:</b> {{ participant.city }}</li>
+      <li><b>Email ДОУ:</b> {{ participant.dou_email }}</li>
+      <li><b>Телефон ДОУ:</b> {{ participant.dou_phone }}</li>
+      <li><b>Педагог-наставник:</b> {{ participant.mentor_name }}</li>
+      <li><b>Тел. педагога:</b> {{ participant.mentor_phone }}</li>
+      <li><b>Игровая ситуация:</b> {{ participant.game_situation }}</li>
+    </ul>
+  </div>
+  <hr>
+  {% if not upload_open %}
+    <div class="card" style="color:red;">Загрузка конкурсных работ недоступна. {% if stage %}Даты этапа: {{ stage.start|date:'d.m.Y H:i' }} — {{ stage.end|date:'d.m.Y H:i' }}{% endif %}</div>
+  {% endif %}
+  {% if upload_open and not allow_upload_media %}
+    <div class="card" style="color:red;">
+      Для загрузки конкурсных работ необходимо:
+      <ul>
+        {% if not profile_complete %}<li>Заполнить все поля анкеты</li>{% endif %}
+        {% if not docs_complete %}<li>Загрузить обязательные документы: согласие на обработку ПД и согласие на фото/видео</li>{% endif %}
+      </ul>
+    </div>
+  {% endif %}
+  <div class="card">
+    <h3>Документы (PDF)</h3>
+    {% if upload_open %}
+      <form id="doc-upload-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ doc_form.as_p }}
+        <button type="submit" name="upload_document">Загрузить документ</button>
+      </form>
+      <div id="doc-progress" style="display:none;width:100%;background:#eee;margin:5px 0;"><div id="doc-bar" style="width:0;height:20px;background:#4caf50;"></div></div>
+      <div id="doc-status"></div>
+    {% endif %}
+    <ul>
+      {% for doc in documents %}
+        <li>{{ doc.get_doc_type_display }}: <a href="{{ doc.file.url }}" target="_blank">Скачать</a>
+          {% if upload_open %}
+            <button class="btn btn-delete" onclick="deleteFile('document', '{{ doc.id }}')" type="button">Удалить</button>
+          {% endif %}
+        </li>
+      {% empty %}
+        <li style="color:#b0bec5;">Нет загруженных документов</li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Фото (до 8)</h3>
+    {% if upload_open %}
+      <form id="photo-upload-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ photo_form.as_p }}
+        <button type="submit" name="upload_photo" {% if not allow_upload_media %}disabled{% endif %}>Загрузить фото</button>
+      </form>
+      <div id="photo-progress" style="display:none;width:100%;background:#eee;margin:5px 0;"><div id="photo-bar" style="width:0;height:20px;background:#2196f3;"></div></div>
+      <div id="photo-status"></div>
+    {% endif %}
+    <ul>
+      {% for photo in photos %}
+        <li><img src="{{ photo.file.url }}" alt="Фото" style="max-width:100px; border-radius:8px; box-shadow:0 2px 8px #b0bec5;">
+          {% if upload_open %}
+            <button class="btn btn-delete" onclick="deleteFile('photo', '{{ photo.id }}')" type="button">Удалить</button>
+          {% endif %}
+        </li>
+      {% empty %}
+        <li style="color:#b0bec5;">Нет загруженных фото</li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Видео (1, до 3Гб)</h3>
+    {% if upload_open %}
+      <form id="video-upload-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ video_form.as_p }}
+        <button type="submit" name="upload_video" {% if not allow_upload_media %}disabled{% endif %}>Загрузить видео</button>
+      </form>
+      <div id="video-progress" style="display:none;width:100%;background:#eee;margin:5px 0;"><div id="video-bar" style="width:0;height:20px;background:#f44336;"></div></div>
+      <div id="video-status"></div>
+    {% endif %}
+    <ul>
+      {% for video in videos %}
+        <li><a href="{{ video.file.url }}" target="_blank">Смотреть видео</a>
+          {% if upload_open %}
+            <button class="btn btn-delete" onclick="deleteFile('video', '{{ video.id }}')" type="button">Удалить</button>
+          {% endif %}
+        </li>
+      {% empty %}
+        <li style="color:#b0bec5;">Нет загруженного видео</li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Волонтёры (до 5)</h3>
+    {% if upload_open %}
+      <form method="post">
+        {% csrf_token %}
+        {{ volunteer_form.as_p }}
+        <button type="submit" name="add_volunteer" {% if not allow_upload_media %}disabled{% endif %}>Добавить волонтёра</button>
+      </form>
+    {% endif %}
+    <ul>
+      {% for v in volunteers %}
+        <li>{{ v.full_name }} ({{ v.birth_date }})</li>
+      {% empty %}
+        <li>Нет волонтёров</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+<script>
+function ajaxUpload(formId, progressId, barId, statusId, btnName) {
+    const form = document.getElementById(formId);
+    if (!form) return;
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(form);
+        formData.append(btnName, '1');
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', window.location.href);
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.upload.onprogress = function(e) {
+            if (e.lengthComputable) {
+                const percent = Math.round((e.loaded / e.total) * 100);
+                document.getElementById(progressId).style.display = '';
+                document.getElementById(barId).style.width = percent + '%';
+            }
+        };
+        xhr.onload = function() {
+            document.getElementById(progressId).style.display = 'none';
+            document.getElementById(barId).style.width = '0';
+            let resp = {};
+            try { resp = JSON.parse(xhr.responseText); } catch {}
+            // Показываем toast вместо статуса
+            if (xhr.status === 200) {
+                showToast(resp.message || 'Файл загружен!', 'success');
+            } else {
+                showToast(resp.message || 'Ошибка загрузки', 'error');
+            }
+            if (xhr.status === 200 && resp.reload) {
+                setTimeout(function(){ location.reload(); }, 1000);
+            }
+        };
+        xhr.onerror = function() {
+            showToast('Ошибка загрузки', 'error');
+        };
+        xhr.send(formData);
+    });
+}
+ajaxUpload('doc-upload-form', 'doc-progress', 'doc-bar', 'doc-status', 'upload_document');
+ajaxUpload('photo-upload-form', 'photo-progress', 'photo-bar', 'photo-status', 'upload_photo');
+ajaxUpload('video-upload-form', 'video-progress', 'video-bar', 'video-status', 'upload_video');
+
+function deleteFile(fileType, fileId) {
+    if (!confirm('Вы уверены, что хотите удалить этот файл?')) return;
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '{% url "delete_participant_file" %}');
+    xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    xhr.onload = function() {
+        let resp = {};
+        try { resp = JSON.parse(xhr.responseText); } catch {}
+        if (xhr.status === 200) {
+            showToast(resp.message || 'Файл удалён!', 'success');
+            setTimeout(function(){ location.reload(); }, 1000);
+        } else {
+            showToast(resp.message || 'Ошибка удаления', 'error');
+        }
+    };
+    xhr.onerror = function() {
+        showToast('Ошибка удаления', 'error');
+    };
+    const formData = new FormData();
+    formData.append('file_type', fileType);
+    formData.append('file_id', fileId);
+    xhr.send(formData);
+}
+</script>
+{% endblock %} 

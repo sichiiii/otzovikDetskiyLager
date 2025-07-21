@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Мастерская открытий</title>
+    <link rel="stylesheet" href="/static/css/index.css">
+</head>
+<body>
+    <nav>
+        <a href="/">Главная</a> |
+        <a href="/register/expert/">Регистрация эксперта</a> |
+        <a href="/register/participant/">Регистрация участника</a> |
+        {% if user.is_authenticated %}
+            {% if user.role == 'organizer' %}
+                <a href="/cabinet/organizer/">Личный кабинет</a> |
+            {% elif user.role == 'expert' %}
+                <a href="/cabinet/expert/">Личный кабинет</a> |
+            {% elif user.role == 'participant' %}
+                <a href="/cabinet/participant/">Личный кабинет</a> |
+            {% endif %}
+            <a href="/logout/">Выйти</a>
+        {% else %}
+        <a href="/login/">Вход</a>
+        {% endif %}
+    </nav>
+    <hr>
+    <div id="toast-container"></div>
+    {% if messages %}
+      <ul id="django-messages" style="display:none;">
+        {% for message in messages %}
+          <li data-level="{{ message.level_tag }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    {% block content %}{% endblock %}
+    <script>
+    // Toast logic
+    function showToast(msg, level) {
+        const toast = document.createElement('div');
+        toast.className = 'toast ' + (level || 'info');
+        toast.textContent = msg;
+        document.getElementById('toast-container').appendChild(toast);
+        setTimeout(() => { toast.classList.add('hide'); }, 3000);
+        setTimeout(() => { toast.remove(); }, 3500);
+    }
+    // Show Django messages as toast
+    document.addEventListener('DOMContentLoaded', function() {
+        const msgs = document.querySelectorAll('#django-messages li');
+        msgs.forEach(function(li) {
+            showToast(li.textContent, li.dataset.level);
+        });
+    });
+    </script>
+</body>
+</html> 

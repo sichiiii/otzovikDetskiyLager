@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <h2>Кабинет организатора</h2>
+  <div class="card">
+    <a href="{% url 'download_all_zip' %}" class="btn">Скачать все материалы (zip)</a>
+  </div>
+  <div class="card">
+    <h3>Эксперты по игровым ситуациям</h3>
+    <ul>
+      {% for game, experts in experts_by_game.items %}
+        <li style="margin-bottom:12px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap;">
+          <div><b style="min-width:180px;">{{ game }}</b></div>
+        <li style="display:flex; align-items:center; justify-content:space-between;">
+          <div style="margin-left:auto; min-width:180px; text-align:right;">
+            <a href="{% url 'download_game_zip' 'experts' game %}" class="btn" style="margin-bottom: 4px;">Скачать экспертов (zip)</a>
+          </div>
+        </li>
+          <ul style="width:100%;">
+            {% for expert in experts %}
+              <li style="margin-bottom:8px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap;">
+                <div>Эксперт: {{ expert.full_name }} (Дата рождения: {{ expert.birth_date }})</div>
+                <div style="margin-left:auto; min-width:120px; text-align:right;"></div>
+                <ul style="width:100%;">
+                  {% for doc in expert.document_set.all %}
+                    <li style="display:flex; align-items:center; justify-content:space-between;">
+                          <span>{{ doc.get_doc_type_display }}:</span>
+
+                        </li>
+                          <li style="display:flex; align-items:center; justify-content:space-between;">
+                          <a href="{{ doc.file.url }}" target="_blank" class="btn">Скачать</a>
+                        </li>
+                      {% empty %}
+                        <li style="color:#b0bec5;">Нет документов</li>
+                      {% endfor %}
+                </ul>
+              </li>
+            {% endfor %}
+          </ul>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Участники по игровым ситуациям</h3>
+    <ul>
+      {% for game, participants in participants_by_game.items %}
+        <li style="margin-bottom:12px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap;">
+          <div><b style="min-width:180px; font-size: 24px;">{{ game }}</b></div>
+            <li style="display:flex; align-items:center; justify-content:space-between;">
+          <div style="margin-left:auto; min-width:180px; text-align:right;">
+            <a href="{% url 'download_game_zip' 'participants' game %}" class="btn" style="margin-bottom: 4px;">Скачать участников (zip)</a>
+          </div>
+            </li>
+          <ul style="width:100%;">
+            {% for participant in participants %}
+              <li style="margin-bottom:8px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap;">
+                <div>{{ participant.full_name }} (Дата рождения: {{ participant.birth_date }}) — ДОУ: {{ participant.dou_name }}</div>
+                <div style="margin-left:auto; min-width:120px; text-align:right;"></div>
+                <ul style="width:100%;">
+                  <li>Документы:
+                    <ul>
+                      {% for doc in participant.document_set.all %}
+                        <li style="display:flex; align-items:center; justify-content:space-between;">
+                          <span>{{ doc.get_doc_type_display }}:</span>
+
+                        </li>
+                          <li style="display:flex; align-items:center; justify-content:space-between;">
+                          <a href="{{ doc.file.url }}" target="_blank" class="btn">Скачать</a>
+                        </li>
+                      {% empty %}
+                        <li style="color:#b0bec5;">Нет документов</li>
+                      {% endfor %}
+                    </ul>
+                  </li>
+                  <li>Фото:
+                    <ul>
+                      {% for photo in participant.photos.all %}
+                        <li style="display:flex; align-items:center; justify-content:space-between;">
+                          <a href="{{ photo.file.url }}" target="_blank" class="btn">Фото</a>
+                        </li>
+                      {% empty %}
+                        <li style="color:#b0bec5;">Нет фото</li>
+                      {% endfor %}
+                    </ul>
+                  </li>
+                  <li>Видео:
+                    <ul>
+                      {% for video in participant.videos.all %}
+                        <li style="display:flex; align-items:center; justify-content:space-between;">
+                          <a href="{{ video.file.url }}" target="_blank" class="btn">Видео</a>
+                        </li>
+                      {% empty %}
+                        <li style="color:#b0bec5;">Нет видео</li>
+                      {% endfor %}
+                    </ul>
+                  </li>
+                  <li>Волонтёры:
+                    <ul>
+                      {% for v in participant.volunteers.all %}
+                        <li>{{ v.full_name }} (Дата рождения: {{ v.birth_date }})</li>
+                      {% empty %}
+                        <li style="color:#b0bec5;">Нет волонтёров</li>
+                      {% endfor %}
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            {% endfor %}
+          </ul>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %} 
