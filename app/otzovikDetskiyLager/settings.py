@@ -59,9 +59,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
 EMAIL_USE_SSL = True
-EMAIL_HOST_USER = 'kirill.f@itfox-web.com'
-EMAIL_HOST_PASSWORD = 'miinxmoyikxmxzjt'
-DEFAULT_FROM_EMAIL = 'kirill.f@itfox-web.com'
+EMAIL_HOST_USER = 'vestivaldou247@yandex.ru'
+EMAIL_HOST_PASSWORD = 'dpvvdsxhatpxqazk'
+DEFAULT_FROM_EMAIL = 'vestivaldou247@yandex.ru'
 
 ROOT_URLCONF = 'otzovikDetskiyLager.urls'
 

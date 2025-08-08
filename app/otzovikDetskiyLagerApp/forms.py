@@ -6,8 +6,6 @@ from datetime import datetime
 
 class ExpertRegistrationForm(forms.ModelForm):
     email = forms.EmailField(label='Электронная почта')
-    password1 = forms.CharField(widget=forms.PasswordInput, label='Пароль')
-    password2 = forms.CharField(widget=forms.PasswordInput, label='Повторите пароль')
     birth_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), label='Дата рождения')
 
     class Meta:
@@ -22,10 +20,6 @@ class ExpertRegistrationForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        password1 = cleaned_data.get('password1')
-        password2 = cleaned_data.get('password2')
-        if password1 != password2:
-            raise forms.ValidationError('Пароли не совпадают')
         return cleaned_data
 
     def save(self, commit=True):
@@ -34,7 +28,7 @@ class ExpertRegistrationForm(forms.ModelForm):
         birth_date = self.cleaned_data['birth_date']
         initials = ''.join([x[0].upper() for x in full_name.split()[1:]])
         last_name = full_name.split()[0]
-        login = f"{last_name}{initials}".replace(' ', '')
+        login = f"{initials}{last_name}".replace(' ', '')
         password = f"{login}{birth_date.day}"
         email = self.cleaned_data['email']
         user = User.objects.create_user(username=login, email=email, password=password, role='expert')
@@ -46,8 +40,6 @@ class ExpertRegistrationForm(forms.ModelForm):
 
 class ParticipantRegistrationForm(forms.ModelForm):
     email = forms.EmailField(label='Электронная почта')
-    password1 = forms.CharField(widget=forms.PasswordInput, label='Пароль')
-    password2 = forms.CharField(widget=forms.PasswordInput, label='Повторите пароль')
     birth_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), label='Дата рождения')
 
     class Meta:
@@ -68,10 +60,6 @@ class ParticipantRegistrationForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        password1 = cleaned_data.get('password1')
-        password2 = cleaned_data.get('password2')
-        if password1 != password2:
-            raise forms.ValidationError('Пароли не совпадают')
         return cleaned_data
 
     def save(self, commit=True):
